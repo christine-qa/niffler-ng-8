@@ -11,7 +11,8 @@ import java.util.Date;
 
 public class CreateSpendingExtension implements BeforeEachCallback {
 
-  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
+  public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.
+          create(CreateSpendingExtension.class);
   private final SpendApiClient spendApiClient = new SpendApiClient();
 
   @Override
@@ -35,6 +36,7 @@ public class CreateSpendingExtension implements BeforeEachCallback {
 
           SpendJson created = spendApiClient.addSpend(spendJson);
           context.getStore(NAMESPACE).put(context.getUniqueId(), created);
-        });
+        }
+    );
   }
 }
