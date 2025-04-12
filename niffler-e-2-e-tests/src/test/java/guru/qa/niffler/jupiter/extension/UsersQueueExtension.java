@@ -43,9 +43,9 @@ public class UsersQueueExtension implements
       Arrays.stream(context.getRequiredTestMethod().getParameters())
         .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
         .findFirst()
-        .map(p -> p.getAnnotation(UserType.class)) // находим все паараметры
+        .map(p -> p.getAnnotation(UserType.class))
         .ifPresent(ut -> {
-          Optional<StaticUser> user = Optional.empty(); // создаем переменную для хранения пользователя
+          Optional<StaticUser> user = Optional.empty();
           StopWatch sw = StopWatch.createStarted();
           while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
               switch (ut.type()) {
