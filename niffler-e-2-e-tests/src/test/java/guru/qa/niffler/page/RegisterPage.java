@@ -18,17 +18,17 @@ public class RegisterPage {
 
     public RegisterPage setUsername(String username) {
         usernameInput.setValue(username);
-        return new RegisterPage();
+        return this;
     }
 
     public RegisterPage setPassword(String password) {
         passwordInput.setValue(password);
-        return new RegisterPage();
+        return this;
     }
 
     public RegisterPage setPasswordSubmit(String password) {
         passwordSubmitInput.setValue(password);
-        return new RegisterPage();
+        return this;
     }
 
     public RegisterResultPage doSignUp() {
@@ -39,5 +39,4 @@ public class RegisterPage {
     public void checkThatErrorContains(String expectedError) {
         errors.find(text(expectedError)).should(visible);
     }
-
 }
