@@ -22,20 +22,20 @@ public class CategoryTests {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin("duck", "12345")
                 .goToMenu()
-                .goToProfile()
+                .goToProfilePage()
                 .showArchivedCategories();
 
         ProfilePage profilePage = new ProfilePage();
         profilePage.checkThatCategoriesListContains(categoryJson.name());
     }
 
-    @Category(username = "duck", archived = false)
+    @Category(username = "duck")
     @Test
     void activeCategoryShouldPresentInCategoriesList(CategoryJson categoryJson) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin("duck", "12345")
                 .goToMenu()
-                .goToProfile();
+                .goToProfilePage();
 
         ProfilePage profilePage = new ProfilePage();
         profilePage.checkThatCategoriesListContains(categoryJson.name());

@@ -23,9 +23,9 @@ public class MainPage {
     return new EditSpendingPage();
   }
 
-  public MenuPage goToMenu() {
+  public MenuComponent goToMenu() {
     menuBtn.click();
-    return new MenuPage();
+    return new MenuComponent();
   }
 
   public void checkThatTableContains(String spendingDescription) {
