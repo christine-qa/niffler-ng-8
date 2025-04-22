@@ -2,16 +2,14 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.RegisterPage;
 import guru.qa.niffler.page.RegisterResultPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.util.UUID;
-
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class RegisterTests {
 
     private static final Config CFG = Config.getInstance();
@@ -19,11 +17,9 @@ public class RegisterTests {
 
     @Test
     void shouldRegisterNewUser() {
-        String username = UUID.randomUUID().toString();
-
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .createAccount()
-                .setUsername(username)
+                .setUsername(RandomDataUtils.randomUsername())
                 .setPassword(password)
                 .setPasswordSubmit(password)
                 .doSignUp();
@@ -33,7 +29,7 @@ public class RegisterTests {
 
     @Test
     void shouldNotRegisterUserWithExistingUsername() {
-        String username = UUID.randomUUID().toString();
+        String username = RandomDataUtils.randomUsername();
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .createAccount()

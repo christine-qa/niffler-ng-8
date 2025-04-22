@@ -41,7 +41,7 @@ public class UsersQueueExtension implements
   @Override
   public void beforeTestExecution(ExtensionContext context) {
       Arrays.stream(context.getRequiredTestMethod().getParameters())
-        .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+        .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class)  && p.getType().isAssignableFrom(StaticUser.class))
         .findFirst()
         .map(p -> p.getAnnotation(UserType.class))
         .ifPresent(ut -> {
@@ -76,15 +76,16 @@ public class UsersQueueExtension implements
         context.getUniqueId(),
         Map.class
     );
-
-      for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
-          switch (e.getKey().type()) {
-              case WITH_FRIENDS -> USERS_WITH_FRIENDS.add(e.getValue());
-              case EMPTY -> EMPTY_USERS.add(e.getValue());
-              case WITH_INCOME_REQUEST -> USERS_WITH_INCOME_REQUEST.add(e.getValue());
-              case WITH_OUTCOME_REQUEST -> USERS_WITH_OUTCOME_REQUEST.add(e.getValue());
-          }
-      }
+    if (map != null) {
+        for (Map.Entry<UserType, StaticUser> e : map.entrySet()) {
+            switch (e.getKey().type()) {
+                case WITH_FRIENDS -> USERS_WITH_FRIENDS.add(e.getValue());
+                case EMPTY -> EMPTY_USERS.add(e.getValue());
+                case WITH_INCOME_REQUEST -> USERS_WITH_INCOME_REQUEST.add(e.getValue());
+                case WITH_OUTCOME_REQUEST -> USERS_WITH_OUTCOME_REQUEST.add(e.getValue());
+            }
+        }
+    }
   }
 
   @Override
