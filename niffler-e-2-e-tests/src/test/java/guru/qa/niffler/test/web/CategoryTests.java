@@ -15,7 +15,7 @@ public class CategoryTests {
 
     private static final Config CFG = Config.getInstance();
 
-    @User(username = "duck", categories = @Category(true))
+    @User(username = "duck", categories = @Category(archived = true))
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson categoryJson) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
@@ -28,7 +28,7 @@ public class CategoryTests {
         profilePage.checkThatCategoriesListContains(categoryJson.name());
     }
 
-    @User(username = "duck", categories = @Category(false))
+    @User(username = "duck", categories = @Category(archived = false))
     @Test
     void activeCategoryShouldPresentInCategoriesList(CategoryJson categoryJson) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
