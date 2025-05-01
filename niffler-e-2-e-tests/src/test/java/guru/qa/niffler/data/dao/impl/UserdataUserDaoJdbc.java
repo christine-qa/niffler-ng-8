@@ -64,11 +64,6 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
                 ps.execute();
                 try (ResultSet rs = ps.getResultSet()) {
                     if (rs.next()) {
-                        int cc = rs.getMetaData().getColumnCount();
-                        for (int i = 1; i <= cc; i++ ) {
-                            String name = rs.getMetaData().getColumnName(i);
-                            System.out.println("column" + name);
-                        }
                         UserEntity userEntity = new UserEntity();
                         userEntity.setId(rs.getObject("id", UUID.class));
                         userEntity.setUsername(rs.getString("username"));

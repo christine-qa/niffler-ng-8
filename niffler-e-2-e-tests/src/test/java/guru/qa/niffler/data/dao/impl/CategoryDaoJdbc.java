@@ -150,7 +150,7 @@ public class CategoryDaoJdbc implements CategoryDao {
                 ps.setBoolean(3, category.isArchived());
                 ps.setObject(4, category.getId());
                 int updatedRows = ps.executeUpdate();
-                if (updatedRows < 0) {
+                if (updatedRows == 0) {
                     throw new NoSuchElementException("Can`t find category");
                 } else {
                     return category;
