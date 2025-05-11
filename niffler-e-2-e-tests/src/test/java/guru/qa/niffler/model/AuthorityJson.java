@@ -14,20 +14,4 @@ public record AuthorityJson(
     AuthUserJson authUserJson,
     @JsonProperty("authority")
     Authority authority
-) {
-    public static AuthorityJson fromEntity(AuthorityEntity entity) {
-        AuthUserEntity userEntity = entity.getUser();
-        return new AuthorityJson(
-                entity.getId(),
-                new AuthUserJson(
-                        userEntity.getId(),
-                        userEntity.getUsername(),
-                        userEntity.getPassword(),
-                        userEntity.getEnabled(),
-                        userEntity.getAccountNonExpired(),
-                        userEntity.getAccountNonLocked(),
-                        userEntity.getCredentialsNonExpired()),
-                entity.getAuthority()
-        );
-    }
-}
+) {}

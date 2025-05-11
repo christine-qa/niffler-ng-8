@@ -31,7 +31,6 @@ public class SpendDaoJdbc implements SpendDao {
             ps.setDouble(4, spend.getAmount());
             ps.setString(5, spend.getDescription());
             ps.setObject(6, spend.getCategory().getId());
-
             ps.executeUpdate();
 
             final UUID generatedKey;
@@ -49,6 +48,32 @@ public class SpendDaoJdbc implements SpendDao {
         }
     }
 
+    @Override
+    public List<SpendEntity> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM spend"
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                List<SpendEntity> spendList = new ArrayList<>();
+                while (rs.next()) {
+                    SpendEntity se = new SpendEntity();
+                    se.setId(rs.getObject("id", UUID.class));
+                    se.setUsername(rs.getString("username"));
+                    se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    se.setSpendDate(rs.getObject("spend_date", Date.class));
+                    se.setAmount(rs.getDouble("amount"));
+                    se.setDescription(rs.getString("description"));
+                    se.setCategory(new CategoryEntity(rs.getObject("category_id", UUID.class)));
+                    spendList.add(se);
+                }
+                return spendList;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public Optional<SpendEntity> findSpendById(UUID id) {
@@ -58,7 +83,6 @@ public class SpendDaoJdbc implements SpendDao {
                 ps.setObject(1, id);
                 ps.execute();
                 try (ResultSet rs = ps.getResultSet()) {
-                    CategoryDao categoryDaoJdbc = new CategoryDaoJdbc(connection);
                     if (rs.next()) {
                         SpendEntity se = new SpendEntity();
                         se.setId(rs.getObject("id", UUID.class));
@@ -66,13 +90,7 @@ public class SpendDaoJdbc implements SpendDao {
                         se.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
                         se.setSpendDate(rs.getObject("spend_date", Date.class));
                         se.setAmount(rs.getDouble("amount"));
-                        Optional<CategoryEntity> categoryEntity = categoryDaoJdbc.findCategoryById(rs.getObject("category_id",
-                                UUID.class));
-                        if (categoryEntity.isEmpty()) {
-                            throw new NoSuchElementException("Can't find category");
-                        } else {
-                            se.setCategory(categoryEntity.get());
-                        }
+                        se.setCategory(new CategoryEntity(rs.getObject("category_id", UUID.class)));
                         return Optional.of(se);
                     } else {
                         return Optional.empty();
@@ -101,13 +119,7 @@ public class SpendDaoJdbc implements SpendDao {
                         se.setSpendDate(rs.getObject("spend_date", Date.class));
                         se.setAmount(rs.getDouble("amount"));
                         se.setDescription(rs.getString("description"));
-                        Optional<CategoryEntity> categoryEntity = categoryDaoJdbc.findCategoryById(rs.getObject("category_id",
-                                        UUID.class));
-                        if (categoryEntity.isEmpty()) {
-                            throw new NoSuchElementException("Can't find category");
-                        } else {
-                            se.setCategory(categoryEntity.get());
-                        }
+                        se.setCategory(new CategoryEntity(rs.getObject("category_id", UUID.class)));
                         spendList.add(se);
                     }
                     return spendList;

@@ -1,15 +1,12 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.AuthUserDao;
-import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.authUser.AuthUserEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.*;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class AuthUserDaoJdbc implements AuthUserDao {
 
@@ -41,6 +38,32 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 }
                 user.setId(generatedKey);
                 return user;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AuthUserEntity> findAll() {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM \"user\""
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+                List<AuthUserEntity> authUserEntities = new ArrayList<>();
+                while (rs.next()) {
+                    AuthUserEntity ue = new AuthUserEntity();
+                    ue.setId(rs.getObject("id", UUID.class));
+                    ue.setUsername(rs.getString("username"));
+                    ue.setPassword(rs.getString("password"));
+                    ue.setEnabled(rs.getBoolean("enabled"));
+                    ue.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+                    ue.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+                    ue.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+                    authUserEntities.add(ue);
+                }
+                return authUserEntities;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -105,7 +128,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         try (PreparedStatement ps = connection.prepareStatement(
                 "UPDATE \"user\" SET " +
                         "(username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
-                        " = (?, ?, ?) WHERE id = ?"
+                        " = (?, ?, ?, ?, ?, ?) WHERE id = ?"
         )) {
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -113,6 +136,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
             ps.setBoolean(4, user.getAccountNonExpired());
             ps.setBoolean(5, user.getAccountNonLocked());
             ps.setBoolean(6, user.getCredentialsNonExpired());
+            ps.setObject(7, user.getId());
+
             int updatedRows = ps.executeUpdate();
             if (updatedRows == 0) {
                 throw new NoSuchElementException("Can`t find user to update");
