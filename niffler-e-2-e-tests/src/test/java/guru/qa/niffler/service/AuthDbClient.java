@@ -42,7 +42,7 @@ public class AuthDbClient {
                     AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoJdbc(connection);
                     for (Authority authority : Authority.values()) {
                         AuthorityEntity authorityEntity = new AuthorityEntity();
-                        authorityEntity.setUser(authUserEntity);
+                        authorityEntity.setUserId(authUserEntity.getId());
                         authorityEntity.setAuthority(authority);
                         authAuthorityDao.create(authorityEntity);
                     }
